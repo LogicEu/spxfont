@@ -6,7 +6,6 @@
 static int spxTextureSave(const Tex2D tex, const char* path)
 {
     int x, y, i = tex.width * tex.height;
-    const size_t size = tex.width * tex.height;
     FILE* file = fopen(path, "w");
     if (!file) {
         fprintf(stderr, "could not write file '%s'\n", path);
@@ -36,11 +35,12 @@ int main(const int argc, const char** argv)
     Tex2D tex ={NULL, 150, 100};
     tex.pixbuf = calloc(tex.width * tex.height, sizeof(Px));
 
-    font = spxFontLoad("/System/Library/Fonts/Supplemental/Arial.ttf");
+    /* font = spxFontLoad("/System/Library/Fonts/Supplemental/Arial.ttf"); */
+    font = spxFontDefault;
     spxFontDrawText(tex, &font, argc > 1 ? argv[1] : hellostr, p, col);
     ret = spxTextureSave(tex, "out.ppm");
 
-    spxFontFree(&font);
+    /* spxFontFree(&font); */
     free(tex.pixbuf);
     return ret;
 }
