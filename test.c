@@ -1,4 +1,5 @@
 #define SPXF_APPLICATION
+/* #define SPXF_NO_FREETYPE */
 #include <spxfont.h>
 #include <stdio.h>
 #include <stdlib.h>

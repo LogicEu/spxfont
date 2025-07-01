@@ -89,9 +89,14 @@ typedef struct Font2D {
 
 extern Font2D spxFontDefault;
 
+#ifndef SPFX_NO_FREETYPE
+
 Font2D  spxFontLoad(const char* path);
 void    spxFontFree(Font2D* font);
 void    spxFontSize(Font2D* font, size_t size);
+
+#endif /* SPXF_NO_FREETYPE */
+
 int     spxFontDrawGlyph(Tex2D texture, const Glyph glyph, ivec2 p, const Px color);
 int     spxFontDrawText(Tex2D texture, const Font2D*, const char*, ivec2, const Px);
 
@@ -563,28 +568,13 @@ static Glyph spxGlyphs[SPXF_GLYPH_COUNT] = {
 
 Font2D spxFontDefault = {NULL, spxGlyphs};
 
-/* custom font end */
+#ifndef SPXF_NO_FREETYPE
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 static int ftInit = 0;
 static FT_Library ft;
-
-static uint8_t mix8(uint8_t a, uint8_t b, float t)
-{
-    return (uint8_t)((float)a + t * (float)(b - a));
-}
-
-static Px pxMix(Px a, Px b, float t)
-{
-    Px px;
-    px.r = mix8(a.r, b.r, t);
-    px.g = mix8(a.g, b.g, t);
-    px.b = mix8(a.b, b.b, t);
-    px.a = mix8(a.a, b.a, t);
-    return px;
-}
 
 static int spxFontStart(void)
 {
@@ -662,6 +652,23 @@ Font2D spxFontLoad(const char* path)
     spxFontSize(&font, SPXF_FONT_SIZE);
     ++ftInit;
     return font;
+}
+
+#endif /* SPXF_NO_FREETYPE */
+
+static uint8_t mix8(uint8_t a, uint8_t b, float t)
+{
+    return (uint8_t)((float)a + t * (float)(b - a));
+}
+
+static Px pxMix(Px a, Px b, float t)
+{
+    Px px;
+    px.r = mix8(a.r, b.r, t);
+    px.g = mix8(a.g, b.g, t);
+    px.b = mix8(a.b, b.b, t);
+    px.a = mix8(a.a, b.a, t);
+    return px;
 }
 
 int spxFontDrawGlyph(Tex2D texture, const Glyph glyph, ivec2 p, const Px color)
