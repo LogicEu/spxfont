@@ -656,18 +656,18 @@ Font2D spxFontLoad(const char* path)
 
 #endif /* SPXF_NO_FREETYPE */
 
-static uint8_t mix8(uint8_t a, uint8_t b, float t)
+static uint8_t lerpu8(uint8_t a, uint8_t b, float t)
 {
     return (uint8_t)((float)a + t * (float)(b - a));
 }
 
-static Px pxMix(Px a, Px b, float t)
+static Px spxFontPlot(Px a, Px b, float t)
 {
     Px px;
-    px.r = mix8(a.r, b.r, t);
-    px.g = mix8(a.g, b.g, t);
-    px.b = mix8(a.b, b.b, t);
-    px.a = mix8(a.a, b.a, t);
+    px.r = lerpu8(a.r, b.r, t);
+    px.g = lerpu8(a.g, b.g, t);
+    px.b = lerpu8(a.b, b.b, t);
+    px.a = lerpu8(a.a, b.a, t);
     return px;
 }
 
@@ -682,7 +682,7 @@ int spxFontDrawGlyph(Tex2D texture, const Glyph glyph, ivec2 p, const Px color)
         for (x = p.x; x < endx; ++x) {
             Px* px = texture.pixbuf + y * texture.width + x;
             int index = (glyph.size.y - 1 - (y - p.y)) * glyph.size.x + (x - p.x);
-            *px = pxMix(*px, color, (float)glyph.pixmap[index] / 255.0F);
+            *px = spxFontPlot(*px, color, (float)glyph.pixmap[index] / 255.0F);
             ret += x > resx;
         }
     }
